@@ -56,6 +56,13 @@ if paramCount() == 0:
   quit("Please specify the server address, e.g. ./client localhost")
 
 let userClient = newUserClient(paramStr(1))
+
+proc endConnection() {.noconv.} =
+  echo()
+  quit("Connection ended")
+
+setControlCHook(endConnection)
+
 userClient.askUsername()
 asyncCheck userClient.connect()
 asyncCheck userClient.recvMessages()
