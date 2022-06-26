@@ -33,13 +33,13 @@ proc connect(server: Server) =
   server.socket.bindAddr(server.port.Port)
   server.socket.listen()
 
-proc sendMessage(server: Server, client: Client, line: string) {.async} =
+proc sendMessage(server: Server, client: Client, line: string) {.async.} =
   let msg = createMessage(client.username, line)
   for c in server.clients:
     if c.id != client.id and c.connected:
       await c.socket.send(msg)
 
-proc sendServerMessage(server: Server, line: string) {.async} =
+proc sendServerMessage(server: Server, line: string) {.async.} =
   let msg = createMessage("server", line)
   for c in server.clients:
     if c.connected:
