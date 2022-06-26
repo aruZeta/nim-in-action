@@ -48,7 +48,7 @@ proc sendServerMessage(server: Server, line: string) {.async} =
 proc processMessages(client: Client, server: Server) {.async.} =
   while true:
     let line = await client.socket.recvLine()
-    if line.len == 0:
+    if line.len() == 0:
       echo(client, " disconnected")
       client.disconnect()
       asyncCheck server.sendServerMessage(client.username & " disconnected!")
@@ -73,5 +73,16 @@ proc acceptConnections(server: Server) {.async.} =
     asyncCheck client.processMessages(server)
 
 let server = newServer()
+
+proc endConnection() {.noconv.} =
+  for c in server.clients:
+    if c.connected:
+      c.disconnect()
+  server.socket.close()
+  echo()
+  quit("Server connection ended")
+
+setControlCHook(endConnection)
+
 server.connect()
 waitFor server.acceptConnections()

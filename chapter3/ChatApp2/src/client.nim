@@ -39,8 +39,13 @@ proc connect(userClient: UserClient) {.async.} =
 proc recvMessages(userClient: UserClient) {.async.} =
   while true:
     let line = await userClient.socket.recvLine()
-    let parsed = parseMessage(line)
-    echo(parsed.username, ": ", parsed.message)
+    try:
+      let parsed = parseMessage(line)
+      echo(parsed.username, ": ", parsed.message)
+    except JsonParsingError:
+      if line.len() == 0:
+        echo()
+        quit("The server ended the connection")
 
 proc createInputThread(userClient: UserClient) =
   userClient.messageFlow = spawn stdin.readLine()

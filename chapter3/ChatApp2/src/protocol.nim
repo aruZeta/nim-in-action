@@ -15,3 +15,5 @@ proc createMessage*(username, message: string): string =
     "username": %username,
     "message": %message
   }) & "\c\l"
+
+export JsonParsingError
