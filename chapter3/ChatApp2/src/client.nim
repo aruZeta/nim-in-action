@@ -3,6 +3,8 @@ import threadpool
 import asyncdispatch
 import asyncnet
 import protocol
+import std/parseopt
+import std/parseutils
 
 type
   UserClient = ref object
@@ -12,11 +14,10 @@ type
     serverPort: int
     messageFlow: FlowVar[string]
 
-proc newUserClient(serverAddr: string, port: int = 6262): UserClient =
+proc newUserClient(serverPort: int = 6262): UserClient =
   UserClient(
     socket: newAsyncSocket(),
-    serverAddr: serverAddr,
-    serverPort: port
+    serverPort: serverPort
   )
 
 proc askUsername(userClient: UserClient) =
@@ -60,7 +61,25 @@ proc sendMessages(userClient: UserClient) =
 if paramCount() == 0:
   quit("Please specify the server address, e.g. ./client localhost")
 
-let userClient = newUserClient(paramStr(1))
+let userClient = newUserClient()
+
+var params: OptParser = initOptParser(
+  commandLineParams(),
+  shortNoVal = {'0'}, # Need to pass a
+  longNoVal = @["0"]  # non-empty array
+)
+
+for kind, key, val in params.getopt():
+  case kind
+  of cmdEnd: discard
+  of cmdShortOption:
+    if key == "p":
+      discard parseInt(val, userClient.serverPort)
+  of cmdLongOption:
+    if key == "port":
+      discard parseInt(val, userClient.serverPort)
+  of cmdArgument:
+    userClient.serverAddr = key
 
 proc endConnection() {.noconv.} =
   echo()
