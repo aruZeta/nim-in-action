@@ -41,7 +41,7 @@ proc recvMessages(userClient: UserClient) {.async.} =
   while true:
     let line = await userClient.socket.recvLine()
     try:
-      let parsed = parseMessage(line)
+      let parsed = line.parseMessage()
       echo(parsed.username, ": ", parsed.message)
     except JsonParsingError:
       if line.len() == 0:
@@ -74,10 +74,10 @@ for kind, key, val in params.getopt():
   of cmdEnd: discard
   of cmdShortOption:
     if key == "p":
-      discard parseInt(val, userClient.serverPort)
+      discard val.parseInt(userClient.serverPort)
   of cmdLongOption:
     if key == "port":
-      discard parseInt(val, userClient.serverPort)
+      discard val.parseInt(userClient.serverPort)
   of cmdArgument:
     userClient.serverAddr = key
 
@@ -85,7 +85,7 @@ proc endConnection() {.noconv.} =
   echo()
   quit("Connection ended")
 
-setControlCHook(endConnection)
+endConnection.setControlCHook()
 
 userClient.askUsername()
 asyncCheck userClient.connect()

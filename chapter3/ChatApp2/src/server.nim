@@ -82,7 +82,7 @@ proc endConnection() {.noconv.} =
   echo()
   quit("Server connection ended")
 
-setControlCHook(endConnection)
+endConnection.setControlCHook()
 
 server.connect()
 waitFor server.acceptConnections()
