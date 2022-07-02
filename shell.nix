@@ -10,5 +10,10 @@ let
 in pkgs.mkShell {
   buildInputs = with pkgs; [
     oldPkgs.nim
+    pcre
   ];
+
+  shellHook = ''
+    export PCRE_PATH=${pkgs.pcre.out}/lib
+  '';
 }

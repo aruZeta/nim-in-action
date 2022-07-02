@@ -1,0 +1,2 @@
+--dynlibOverride:pcre
+--passL:"$PCRE_PATH/libpcre.so"
