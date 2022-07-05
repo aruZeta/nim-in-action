@@ -14,6 +14,6 @@ in pkgs.mkShell {
   ];
 
   shellHook = ''
-    export PCRE_PATH=${pkgs.pcre.out}/lib
+    export NIX_PCRE_PATH=${pkgs.pcre.out}/lib
   '';
 }
