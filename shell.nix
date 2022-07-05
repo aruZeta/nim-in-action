@@ -11,9 +11,11 @@ in pkgs.mkShell {
   buildInputs = with pkgs; [
     oldPkgs.nim
     pcre
+    sqlite
   ];
 
   shellHook = ''
     export NIX_PCRE_PATH=${pkgs.pcre.out}/lib
+    export NIX_SQLITE_PATH=${pkgs.sqlite.out}/lib
   '';
 }
