@@ -19,6 +19,37 @@ type
 proc newDB*(filename: string = "Tweeter.db"): Database =
   Database(db: open(filename, "", "", ""))
 
+# -------------------------
+proc setup*(db: Database) =
+  db.db.exec(sql"""
+    CREATE TABLE IF NOT EXISTS User(
+      username text PRIMARY KEY
+    );
+  """)
+
+  db.db.exec(sql"""
+    CREATE TABLE IF NOT EXISTS Following(
+      follower text,
+      followed_user text,
+      PRIMARY KEY (follower, followed_user),
+      FOREIGN KEY (follower) REFERENCES User(username),
+      FOREIGN KEY (followed_user) REFERENCES User(username)
+    );
+  """)
+
+  db.db.exec(sql"""
+    CREATE TABLE IF NOT EXISTS Message(
+      username text,
+      time integer,
+      msg text NOT NULL,
+      FOREIGN KEY (username) REFERENCES User(username)
+    );
+  """)
+
+# -------------------------
+proc close*(db: Database) =
+  db.db.close()
+
 # --------------------------------------
 proc post*(db: Database, msg: Message) =
   if msg.msg.len() > 140:
