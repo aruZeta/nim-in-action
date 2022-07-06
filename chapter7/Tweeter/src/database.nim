@@ -64,11 +64,13 @@ proc post*(db: Database, msg: Message) =
   )
 
 # ------------------------------------------------------
-proc follow*(db: Database, follower: User, user: User) =
+proc follow*(db: Database, follower: var User, user: User) =
   db.db.exec(
     sql"INSERT INTO Following VALUES (?, ?);",
     follower.username, user.username
   )
+
+  follower.following.add(user.username)
 
 # --------------------------------------
 proc create*(db: Database, user: User) =
