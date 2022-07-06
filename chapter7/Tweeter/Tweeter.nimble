@@ -7,9 +7,6 @@ license       = "GPL-3.0"
 srcDir        = "src"
 bin           = @["Tweeter"]
 
-bin = @["Tweeter"]
-skipExt = @["nim"]
-
 # Dependencies
 
 requires("nim 1.0.6",
