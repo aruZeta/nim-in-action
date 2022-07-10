@@ -12,10 +12,12 @@ in pkgs.mkShell {
     oldPkgs.nim
     pcre
     sqlite
+    SDL2
   ];
 
-  shellHook = ''
-    export NIX_PCRE_PATH=${pkgs.pcre.out}/lib
-    export NIX_SQLITE_PATH=${pkgs.sqlite.out}/lib
+  shellHook = with pkgs; ''
+    export NIX_PCRE_PATH=${pcre.out}/lib
+    export NIX_SQLITE_PATH=${sqlite.out}/lib
+    export NIX_SDL2_PATH=${SDL2.out}/lib
   '';
 }
