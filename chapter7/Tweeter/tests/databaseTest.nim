@@ -8,7 +8,7 @@ when isMainModule:
   var db = newDB("Tweeter_test.db")
   db.setup()
 
-  db.create(User(username: "aru-hackZ"))
+  db.create(User(username: "aruZeta"))
   db.create(User(username: "nim_lang"))
 
   let
@@ -26,7 +26,7 @@ when isMainModule:
   ))
 
   var aru: User
-  doAssert db.findUser("aru-hackZ", aru)
+  doAssert db.findUser("aruZeta", aru)
 
   var nim: User
   doAssert db.findUser("nim_lang", nim)

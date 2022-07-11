@@ -1,6 +1,6 @@
 # Package
 version      = "0.1.0"
-author       = "aru-hackZ"
+author       = "aruZeta"
 description  = "Simple package to learn about Nimble"
 license      = "IDK"
 
