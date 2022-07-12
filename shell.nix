@@ -3,13 +3,13 @@
 }:
 
 let
-  oldPkgs = import (builtins.fetchTarball {
-    url = "https://github.com/nixos/nixpkgs/archive/b4fd657c25f125ab474567b847dfdfc31b5923d1.tar.gz";
-    sha256 = "sha256:0vcjcr0yx5mhqf89kfsk2vg1y6xfd2rnbqk654hizv7sckv53pa3";
-  }) {};
+  nim-1-6-6-pkgs = (import (builtins.fetchTarball {
+    url = "https://github.com/nixos/nixpkgs/archive/4fc665856d5a6be6f647fd9d63d9390f48763192.tar.gz";
+    sha256 = "sha256:1ki0bfbwss244168r1apb3bkjx6w05bmjbpazwgq8298dp2ixx7y";
+  }) {});
 in pkgs.mkShell {
   buildInputs = with pkgs; [
-    oldPkgs.nim
+    nim-1-6-6-pkgs.nim
     pcre
     sqlite
     SDL2

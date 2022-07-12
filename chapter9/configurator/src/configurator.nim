@@ -1,11 +1,11 @@
 import macros
 
-proc createRefType(ident: NimIdent, indentDefs: seq[NimNode]): NimNode =
+proc createRefType(ident: NimNode, indentDefs: seq[NimNode]): NimNode =
   result = newTree(
     nnkTypeSection,
     newTree(
       nnkTypeDef,
-      newIdentNode(ident),
+      ident,
       newEmptyNode(),
       newTree(
         nnkRefTy,
@@ -35,7 +35,7 @@ template constructor(ident: untyped): untyped =
   proc `new ident`(): `ident` =
     new result
 
-proc createLoadProc(typeName: NimIdent, identDefs: seq[NimNode]): NimNode =
+proc createLoadProc(typeName: NimNode, identDefs: seq[NimNode]): NimNode =
   var cfgIdent = newIdentNode("cfg")
   var filenameIdent = newIdentNode("filename")
   var objIdent = newIdentNode("obj")
@@ -46,21 +46,21 @@ proc createLoadProc(typeName: NimIdent, identDefs: seq[NimNode]): NimNode =
 
   for identDef in identDefs:
     let fieldNameIdent = identDef[0]
-    let fieldName = $fieldNameIdent.ident
-    case $identDef[1].ident
+    let fieldName = fieldNameIdent.strVal
+    case identDef[1].strVal
     of "string":
       body.add quote do:
         `cfgIdent`.`fieldNameIdent` = `objIdent`[`fieldName`].getStr
     of "int":
       body.add quote do:
-        `cfgIdent`.`fieldNameIdent` = `objIdent`[`fieldName`].getNum().int
+        `cfgIdent`.`fieldNameIdent` = `objIdent`[`fieldName`].getInt().int
     else:
       doAssert(false, "Not implemented")
 
   return newProc(
     newIdentNode("load"),
     [newEmptyNode(),
-     newIdentDefs(cfgIdent, newIdentNode(typeName)),
+     newIdentDefs(cfgIdent, typeName),
      newIdentDefs(filenameIdent, newIdentNode("string"))
     ],
     body
@@ -69,10 +69,6 @@ proc createLoadProc(typeName: NimIdent, identDefs: seq[NimNode]): NimNode =
 macro config*(typeName: untyped, fields: untyped): untyped =
   result = newStmtList()
   let identDefs = toIdentDefs(fields)
-  result.add createRefType(typeName.ident, identDefs)
-  result.add getAst(constructor(typeName.ident))
-  result.add createLoadProc(typeName.ident, identDefs)
-
-dumpTree:
-  proc sum(a: int, b: int): int =
-    a + b
+  result.add createRefType(typeName, identDefs)
+  result.add getAst(constructor(typeName))
+  result.add createLoadProc(typeName, identDefs)

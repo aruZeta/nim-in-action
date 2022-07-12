@@ -9,4 +9,4 @@ bin           = @["configurator"]
 
 # Dependencies
 
-requires "nim 1.0.6"
+requires "nim 1.6.6"
