@@ -33,5 +33,5 @@ proc readPageCounts(filename: string) =
 
 when isMainModule:
   const file = "pagecounts-20160101-050000"
-  let filename = getCurrentDir() / file
+  let filename = currentSourcePath.parentDir() / file
   readPageCounts(filename)
