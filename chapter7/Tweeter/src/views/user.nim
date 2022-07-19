@@ -1,43 +1,68 @@
 import "../database"
 import times
-import htmlgen
+import tagger/tagMacro
+
+createTag h1
+createTag h3
+createTag a
+createTag hdiv, tagName = "div"
+createTag span
+createTag form
+createTag input, closed = false
 
 proc renderUser*(user: User): string =
-  result = `div`(
-    id="user",
-    h1(user.username),
-    span("Following: " & $user.following.len)
-  )
+  result = hdiv:
+    id = "user"
+    h1:
+      user.username
+    span:
+      "Following: "
+      $user.following.len
 
 proc renderUser*(user: User, currentUser: User): string =
   var followButton: string
   if user.username notin currentUser.following:
-    followButton = form(
-      action="follow",
-      `method`="post",
-      input(`type`="hidden", name="follower", value=currentUser.username),
-      input(`type`="hidden", name="target", value=user.username),
-      input(`type`="submit", value="Follow"),
-    )
-  result = `div`(
-    id="user",
-    h1(user.username),
-    span("Following: " & $user.following.len),
+    followButton = form:
+      action = "follow"
+      "method" = "post"
+      input:
+        "type" = "hidden"
+        name = "follower"
+        value = currentUser.username
+      input:
+        "type" = "hidden"
+        name = "target"
+        value = user.username
+      input:
+        "type" = "hidden"
+        name = "target"
+        value = user.username
+      input:
+        "type" = "submit"
+        "value" = "Follow"
+  result = hdiv:
+    id = "user"
+    h1:
+      user.username
+    span:
+      "Following: "
+      $user.following.len
     followButton
-  )
 
 proc renderMessages*(messages: seq[Message]): string =
   var msgs: string
   for message in messages:
-    msgs.add `div`(
-      a(href="/" & message.username, message.username),
-      span(message.time.utc().format("HH:mm MMMM d',' yyyy")),
-      h3(message.msg)
-    )
-  result = `div`(
-    id="messages",
+    msgs.add hdiv do:
+      a:
+        href = "/" & message.username
+        message.username
+      span:
+        message.time.utc().format("HH:mm MMMM d',' yyyy")
+      h3:
+        message.msg
+  result = hdiv:
+    id = "messages"
     msgs
-  )
 
 when isMainModule:
   echo renderUser(User(username: "<aru>", following: @[]))
