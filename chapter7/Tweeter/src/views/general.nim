@@ -1,17 +1,6 @@
 import "../database"
 import user
-import tagger/tagMacro
-
-createTag html
-createTag head
-createTag title
-createTag link, closed = false
-createTag body
-createTag h1
-createTag hdiv, tagName = "div"
-createTag span
-createTag form
-createTag input, closed = false
+import tagger/html
 
 proc renderMain*(content: string): string =
   result = html:
